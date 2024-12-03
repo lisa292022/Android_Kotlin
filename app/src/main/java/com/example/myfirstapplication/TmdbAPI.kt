@@ -8,6 +8,9 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface Api {
+    @GET("trending/playlist")
+    suspend fun lastplaylist(@Query("api_key") apiKey: String): TmbPlaylist
+
     @GET("trending/movie/week")
     suspend fun lastmovies(@Query("api_key") apiKey: String): TmdbFilms
 

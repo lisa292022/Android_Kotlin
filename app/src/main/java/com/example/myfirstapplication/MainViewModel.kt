@@ -11,6 +11,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 
 class MainViewModel : ViewModel() {
+    val playlist = MutableStateFlow<List<PlaylistLight>>(listOf())
     val movies = MutableStateFlow<List<FilmLight>>(listOf())
     val series = MutableStateFlow<List<SeriesLight>>(listOf())
     val personnes = MutableStateFlow<List<ActeurLight>>(listOf())
@@ -26,6 +27,12 @@ class MainViewModel : ViewModel() {
         .build();
 
     val api = retrofit.create(Api::class.java)
+
+    fun getPlaylistInitiales() {
+        viewModelScope.launch {
+            movies.value = api.lastplaylist(api_key).results
+        }
+    }
 
     fun getFilmsInitiaux() {
         viewModelScope.launch {
