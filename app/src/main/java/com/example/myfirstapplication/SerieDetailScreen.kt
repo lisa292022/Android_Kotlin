@@ -45,8 +45,6 @@ fun SeriesDetailScreen(viewModel: MainViewModel, serieId: String) {
             Text("Nom : ${serieDetails?.name}")
             Text("Première diffusion : ${serieDetails?.first_air_date}")
             Text("Résumé : ${serieDetails?.overview}")
-            Text("Nombre d'épisodes : ${serieDetails?.number_of_episodes}")
-            Text("Nombre de saisons : ${serieDetails?.number_of_seasons}")
 
             // Affichage des acteurs
             serieDetails?.credits?.cast?.let {

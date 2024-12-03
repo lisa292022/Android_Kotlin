@@ -50,8 +50,6 @@ fun FilmDetailScreen(viewModel: MainViewModel, filmId: String) {
             Text("Titre : ${filmDetails?.title}")
             Text("Date de sortie : ${filmDetails?.release_date}")
             Text("Résumé : ${filmDetails?.overview}")
-            Text("Budget : ${filmDetails?.budget}")
-            Text("Statut : ${filmDetails?.status}")
 
             // Affichage des acteurs
             filmDetails?.credits?.cast?.let {
