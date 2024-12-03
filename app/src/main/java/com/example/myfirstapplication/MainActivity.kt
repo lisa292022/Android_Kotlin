@@ -1,6 +1,6 @@
 package com.example.myfirstapplication
 
-import ActorScreen
+import FilmDetailScreen
 import ProfileScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -33,29 +33,32 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import kotlinx.serialization.Serializable
 import androidx.navigation.NavDestination.Companion.hasRoute
-import com.example.myfirstapplication.MainViewModel
 import com.example.myfirstapplication.ui.theme.MyFirstApplicationTheme
 
 @Serializable
-class ProfilDestination
+class ProfileDest
 
 @Serializable
-class FilmDestination
+class FilmsDest
 
 @Serializable
-class SerieDestination
+class SeriesDest
 
 @Serializable
-class ActorDestination
-
-@Serializable
-class FilmDetailDestination
+class ActeursDest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchTopBar(viewModel: MainViewModel) {
+fun SearchTopBar(viewModel: MainViewModel, currentDestination: String) {
     var isSearching by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
+
+    val placeholderText = when (currentDestination) {
+        "Films" -> "Rechercher un film..."
+        "Series" -> "Rechercher une série..."
+        "Acteurs" -> "Rechercher un acteur..."
+        else -> "Rechercher..."
+    }
 
     TopAppBar(
         title = {
@@ -65,20 +68,22 @@ fun SearchTopBar(viewModel: MainViewModel) {
                     onValueChange = {
                         searchQuery = it
                     },
-                    placeholder = { Text("Rechercher un film...") },
+                    placeholder = { Text(placeholderText) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
             } else {
-                Text("Films")
+                Text(currentDestination)
             }
         },
         actions = {
             IconButton(onClick = {
                 if (isSearching) {
-                    // Rechercher les films par mot-clé
-                    viewModel.searchMovies(searchQuery.text)
-                    // Réinitialiser le champ de recherche
+                    when (currentDestination) {
+                        "Films" -> viewModel.searchMovies(searchQuery.text)
+                        "Series" -> viewModel.searchSeries(searchQuery.text)
+                        "Acteurs" -> viewModel.searchPersons(searchQuery.text)
+                    }
                     isSearching = false
                     searchQuery = TextFieldValue("")
                 } else {
@@ -86,10 +91,9 @@ fun SearchTopBar(viewModel: MainViewModel) {
                 }
             }) {
                 Icon(
-                    painter = painterResource(id = R.drawable.baseline_search_24), // Utilisez une icône qui existe pour tester
+                    painter = painterResource(id = R.drawable.baseline_search_24),
                     contentDescription = "Recherche"
                 )
-
             }
         }
     )
@@ -113,72 +117,88 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
-                        // Affiche la SearchTopBar uniquement si l'écran actuel n'est pas la page Profil
-                        if (currentDestination?.route != ProfilDestination::class.java.simpleName) {
-                            SearchTopBar(viewModel = viewModel)
+                        val currentDestinationLabel = when {
+                            currentDestination?.hasRoute<FilmsDest>() == true -> "Films"
+                            currentDestination?.hasRoute<SeriesDest>() == true -> "Series"
+                            currentDestination?.hasRoute<ActeursDest>() == true -> "Acteurs"
+                            else -> "Profil"
+                        }
+
+                        if (currentDestinationLabel != "Profil") {
+                            SearchTopBar(
+                                viewModel = viewModel,
+                                currentDestination = currentDestinationLabel
+                            )
                         }
                     },
                     bottomBar = {
-                        NavigationBar {
-                            NavigationBarItem(
-                                icon = {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.baseline_movie_filter_24),
-                                        contentDescription = "movies"
-                                    )
-                                },
-                                label = { Text("Films") },
-                                selected = currentDestination?.hasRoute<FilmDestination>() == true,
-                                onClick = { navController.navigate(FilmDestination()) })
-                            NavigationBarItem(
-                                icon = {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.baseline_live_tv_24),
-                                        contentDescription = "series"
-                                    )
-                                },
-                                label = { Text("Series") },
-                                selected = currentDestination?.hasRoute<SerieDestination>() == true,
-                                onClick = { navController.navigate(SerieDestination()) })
-                            NavigationBarItem(
-                                icon = {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.baseline_account_circle_24),
-                                        contentDescription = "actors"
-                                    )
-                                },
-                                label = { Text("Acteurs") },
-                                selected = currentDestination?.hasRoute<ActorDestination>() == true,
-                                onClick = { navController.navigate(ActorDestination()) })
+                        if (currentDestination?.hasRoute<ProfileDest>() == false) {
+                            NavigationBar {
+                                NavigationBarItem(
+                                    icon = {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.baseline_live_tv_24),
+                                            contentDescription = "movies"
+                                        )
+                                    },
+                                    label = { Text("Films") },
+                                    selected = currentDestination?.hasRoute<FilmsDest>() == true,
+                                    onClick = { navController.navigate(FilmsDest()) }
+                                )
+                                NavigationBarItem(
+                                    icon = {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.baseline_movie_filter_24),
+                                            contentDescription = "series"
+                                        )
+                                    },
+                                    label = { Text("Series") },
+                                    selected = currentDestination?.hasRoute<SeriesDest>() == true,
+                                    onClick = { navController.navigate(SeriesDest()) }
+                                )
+                                NavigationBarItem(
+                                    icon = {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.baseline_account_circle_24),
+                                            contentDescription = "actors"
+                                        )
+                                    },
+                                    label = { Text("Acteurs") },
+                                    selected = currentDestination?.hasRoute<ActeursDest>() == true,
+                                    onClick = { navController.navigate(ActeursDest()) }
+                                )
+                            }
                         }
                     }
                 ) { innerPadding ->
                     NavHost(
                         navController,
-                        startDestination = ProfilDestination::class.java.simpleName,
+                        startDestination = ProfileDest(),
                         Modifier.padding(innerPadding)
                     ) {
-                        composable(ProfilDestination::class.java.simpleName) {
+                        composable<ProfileDest> {
                             ProfileScreen(
                                 classes = windowSizeClass,
                                 innerPadding = innerPadding,
                                 navController
                             )
                         }
-                        composable(FilmDestination::class.java.simpleName) {
-                            FilmsScreen(viewModel = viewModel, navController = navController)
+                        composable<FilmsDest> {
+                            FilmsScreen(viewModel = viewModel, navController)
                         }
-                        composable(SerieDestination::class.java.simpleName) {
-                            SerieScreen(viewModel
-                            )
+                        composable<SeriesDest> {
+                            SeriesScreen(viewModel = viewModel, navController)
                         }
-
-                        composable(ActorDestination::class.java.simpleName) {
-                            ActorScreen(
-                                classes = windowSizeClass,
-                                innerPadding = innerPadding,
-                                navController
-                            )
+                        composable<ActeursDest> {
+                            ActeurScreen(viewModel = viewModel)
+                        }
+                        composable("FilmDetailScreen/{filmId}") { backStackEntry ->
+                            val filmId = backStackEntry.arguments?.getString("filmId") ?: return@composable
+                            FilmDetailScreen(viewModel, filmId)
+                        }
+                        composable("SeriesDetailScreen/{seriesId}") { backStackEntry ->
+                            val seriesId = backStackEntry.arguments?.getString("seriesId") ?: return@composable
+                            SeriesDetailScreen(viewModel, seriesId)
                         }
                     }
                 }
