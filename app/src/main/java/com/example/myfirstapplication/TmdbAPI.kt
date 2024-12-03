@@ -1,30 +1,54 @@
-package com.example.myfirstapplication
-
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
+import com.example.myfirstapplication.ActeurLight
+import com.example.myfirstapplication.FilmLight
+import com.example.myfirstapplication.SeriesLight
+import com.example.myfirstapplication.TmdbActeur
+import com.example.myfirstapplication.TmdbFilms
+import com.example.myfirstapplication.TmdbSeries
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface Api {
     @GET("trending/movie/week")
-    suspend fun lastmovies(@Query("api_key") api_key: String): TmdbFilms
+    suspend fun lastmovies(@Query("api_key") apiKey: String): TmdbFilms
 
-    // Nouvelle méthode pour rechercher des films par mot-clé
+    // Nouvelle méthode pour rechercher des films par mot clé
     @GET("search/movie")
     suspend fun searchMovies(
-        @Query("api_key") api_key: String,
+        @Query("api_key") apiKey: String,
         @Query("query") query: String
     ): TmdbFilms
+
+    @GET("trending/tv/week")
+    suspend fun latestSeries(@Query("api_key") apiKey: String): TmdbSeries
+
+    @GET("trending/person/week")
+    suspend fun latestPersons(@Query("api_key") apiKey: String): TmdbActeur
+
+    @GET("search/tv")
+    suspend fun searchSeries(
+        @Query("api_key") apiKey: String,
+        @Query("query") query: String
+    ): TmdbSeries
+
+    @GET("search/person")
+    suspend fun searchPersons(
+        @Query("api_key") apiKey: String,
+        @Query("query") query: String
+    ): TmdbActeur
+
+    @GET("movie/{movie_id}")
+    suspend fun getFilmDetails(
+        @Path("movie_id") movieId: String,
+        @Query("api_key") apiKey: String
+    ): FilmLight
+
+
+    @GET("tv/{tv_id}")
+    suspend fun getSerieDetails(
+        @Path("tv_id") tvId: String,
+        @Query("api_key") apiKey: String
+    ): SeriesLight
 }
-
-val retrofit = Retrofit.Builder()
-    .baseUrl("https://api.themoviedb.org/3/")
-    .addConverterFactory(MoshiConverterFactory.create())
-    .build();
-
-val api = retrofit.create(Api::class.java)
-// à partir de là, on peut appeler api.lastMovies(...)
-
-
 
 
