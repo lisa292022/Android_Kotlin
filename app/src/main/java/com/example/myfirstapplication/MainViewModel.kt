@@ -1,14 +1,9 @@
 package com.example.myfirstapplication
 
 import Api
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -19,8 +14,8 @@ class MainViewModel : ViewModel() {
     val series = MutableStateFlow<List<SeriesLight>>(listOf())
     val personnes = MutableStateFlow<List<ActeurLight>>(listOf())
 
-    val filmDetails = MutableStateFlow<FilmLight?>(null) // Stockage des détails d'un film
-    val serieDetails = MutableStateFlow<SeriesLight?>(null) // Stockage des détails d'une série
+    val filmDetails = MutableStateFlow<FilmDetaille?>(null)
+    val serieDetails = MutableStateFlow<SerieDetaille?>(null)
 
     val api_key = "b229e69561a342c12d5048557ba6e35f"
 
@@ -69,36 +64,33 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    // Nouvelle méthode : récupérer les détails d'un film
+    // Fonction pour récupérer les détails d'un film avec le cast
     fun getFilmDetails(filmId: String) {
-        Log.v("message", "getFilmdetails")
         viewModelScope.launch {
             try {
-                Log.v("message", "getFilmdetails")
-                filmDetails.value = api.getFilmDetails(apiKey = api_key, movieId = filmId)
-                Log.v("message", filmDetails.value?.title ?:"")
+                val details = api.getFilmDetails(apiKey = api_key, filmId = filmId)
+                filmDetails.value = details
             } catch (e: Exception) {
-                Log.v("message", "erreur")
-                filmDetails.value = null
-                e.printStackTrace() // Log d'erreur pour débogage
+                e.printStackTrace()
             }
         }
     }
 
-    // Nouvelle méthode : récupérer les détails d'une série
+    // Fonction pour récupérer les détails d'une série avec le cast
     fun getSerieDetails(serieId: String) {
         viewModelScope.launch {
             try {
-                serieDetails.value = api.getSerieDetails(apiKey= api_key, tvId = serieId)
+                val details = api.getSerieDetails(apiKey = api_key, serieId = serieId)
+                serieDetails.value = details
             } catch (e: Exception) {
-                serieDetails.value = null
-                e.printStackTrace() // Log d'erreur pour débogage
+                e.printStackTrace()
             }
         }
     }
-
-
-
 }
+
+
+
+
 
 

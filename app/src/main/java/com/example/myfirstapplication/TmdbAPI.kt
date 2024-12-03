@@ -1,6 +1,5 @@
-import com.example.myfirstapplication.ActeurLight
-import com.example.myfirstapplication.FilmLight
-import com.example.myfirstapplication.SeriesLight
+import com.example.myfirstapplication.FilmDetaille
+import com.example.myfirstapplication.SerieDetaille
 import com.example.myfirstapplication.TmdbActeur
 import com.example.myfirstapplication.TmdbFilms
 import com.example.myfirstapplication.TmdbSeries
@@ -37,18 +36,19 @@ interface Api {
         @Query("query") query: String
     ): TmdbActeur
 
-    @GET("movie/{movie_id}")
+    // Détails d'un film avec le cast
+    @GET("movie/{movie_id}?append_to_response=credits")
     suspend fun getFilmDetails(
-        @Path("movie_id") movieId: String,
-        @Query("api_key") apiKey: String
-    ): FilmLight
+        @Path("movie_id") filmId: String,
+        @Query("api_key") apiKey: String,
+    ): FilmDetaille
 
-
-    @GET("tv/{tv_id}")
+    // Détails d'une série avec le cast
+    @GET("tv/{tv_id}?append_to_response=credits")
     suspend fun getSerieDetails(
-        @Path("tv_id") tvId: String,
-        @Query("api_key") apiKey: String
-    ): SeriesLight
+        @Path("tv_id") serieId: String,
+        @Query("api_key") apiKey: String,
+    ): SerieDetaille
 }
 
 
