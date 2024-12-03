@@ -48,6 +48,9 @@ class SerieDestination
 @Serializable
 class ActorDestination
 
+@Serializable
+class FilmDetailDestination
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchTopBar(viewModel: MainViewModel) {
@@ -121,35 +124,32 @@ class MainActivity : ComponentActivity() {
                                 icon = {
                                     Icon(
                                         painter = painterResource(id = R.drawable.baseline_movie_filter_24),
-                                        contentDescription = "Movies"
+                                        contentDescription = "movies"
                                     )
                                 },
                                 label = { Text("Films") },
                                 selected = currentDestination?.hasRoute<FilmDestination>() == true,
-                                onClick = { navController.navigate(FilmDestination()) }  // Navigation vers l'écran des films
-                            )
+                                onClick = { navController.navigate(FilmDestination()) })
                             NavigationBarItem(
                                 icon = {
                                     Icon(
                                         painter = painterResource(id = R.drawable.baseline_live_tv_24),
-                                        contentDescription = "Series"
+                                        contentDescription = "series"
                                     )
                                 },
-                                label = { Text("Séries") },
+                                label = { Text("Series") },
                                 selected = currentDestination?.hasRoute<SerieDestination>() == true,
-                                onClick = { navController.navigate(SerieDestination()) }  // Navigation vers l'écran des séries
-                            )
+                                onClick = { navController.navigate(SerieDestination()) })
                             NavigationBarItem(
                                 icon = {
                                     Icon(
                                         painter = painterResource(id = R.drawable.baseline_account_circle_24),
-                                        contentDescription = "Actors"
+                                        contentDescription = "actors"
                                     )
                                 },
                                 label = { Text("Acteurs") },
                                 selected = currentDestination?.hasRoute<ActorDestination>() == true,
-                                onClick = { navController.navigate(ActorDestination()) }  // Navigation vers l'écran des acteurs
-                            )
+                                onClick = { navController.navigate(ActorDestination()) })
                         }
                     }
                 ) { innerPadding ->
@@ -166,12 +166,13 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable(FilmDestination::class.java.simpleName) {
-                            FilmsScreen(viewModel = viewModel)
+                            FilmsScreen(viewModel = viewModel, navController = navController)
                         }
                         composable(SerieDestination::class.java.simpleName) {
                             SerieScreen(viewModel
                             )
                         }
+
                         composable(ActorDestination::class.java.simpleName) {
                             ActorScreen(
                                 classes = windowSizeClass,

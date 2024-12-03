@@ -1,5 +1,7 @@
 package com.example.myfirstapplication
 
+import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -17,22 +19,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.navigation.NavHostController
 
 
 @Composable
-fun FilmsScreen(viewModel: MainViewModel) {
+fun FilmsScreen(viewModel: MainViewModel, navController: NavHostController) {
     // Collecte de la liste des films
     val moviesList by viewModel.movies.collectAsState()
 
+    LaunchedEffect(key1 = true) {
+        viewModel.getFilmsInitiaux()
+
+    }
+
     // Récupération de la liste des films à afficher
     val films = moviesList.firstOrNull()?.results?.filterNotNull().orEmpty()
-
-    // Appel de la méthode pour récupérer les films si la liste est vide
-    LaunchedEffect(films) {
-        if (films.isEmpty()) {
-            viewModel.getFilmsInitiaux()
-        }
-    }
 
     // Affichage de la grille des films
     if (films.isNotEmpty()) {
@@ -42,7 +43,7 @@ fun FilmsScreen(viewModel: MainViewModel) {
             contentPadding = PaddingValues(16.dp)
         ) {
             items(films) { film ->
-                FilmItem(film)
+                FilmItem(film, navController) // Passe le navController pour gérer la navigation
             }
         }
     } else {
@@ -52,7 +53,7 @@ fun FilmsScreen(viewModel: MainViewModel) {
 }
 
 @Composable
-fun FilmItem(film: FilmLight) {
+fun FilmItem(film: FilmLight, navController: NavHostController) {
     Column(
         modifier = Modifier
             .padding(8.dp)
@@ -69,18 +70,17 @@ fun FilmItem(film: FilmLight) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(180.dp)
+                .clickable {
+                    Log.v("zzzzz", "clic sur film")
+                    navController.navigate("movieDetail/${film.id}") // Navigue vers l'écran de détails du film
+                }
         )
         Text(
             text = film.title ?: "Titre inconnu",
             modifier = Modifier.padding(top = 8.dp),
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
-            textAlign = TextAlign.Center // Ajout de l'alignement centré
-        )
-        Text(
-            text = film.release_date ?: "Date inconnue",
-            modifier = Modifier.padding(top = 4.dp),
-            textAlign = TextAlign.Center // Ajout de l'alignement centré si nécessaire
+            textAlign = TextAlign.Center
         )
     }
 }
