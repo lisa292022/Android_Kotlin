@@ -16,6 +16,8 @@ import androidx.navigation.NavHostController
 import androidx.window.core.layout.WindowSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
 import com.example.myfirstapplication.FilmsDest
+import com.example.myfirstapplication.VideDest
+
 
 import com.example.myfirstapplication.R
 
@@ -127,7 +129,7 @@ fun ContactInfo(email: String, linkedin: String) {
 fun StartButton(navController: NavHostController) {
     Button(
         modifier = Modifier.padding(0.dp, 50.dp, 0.dp, 0.dp),
-        onClick = { navController.navigate(FilmsDest()) }
+        onClick = { navController.navigate(VideDest()) }
     ) {
         Text("Démarrer")
     }

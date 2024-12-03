@@ -1,4 +1,4 @@
-package com.example.myfirstapplication
+/*package com.example.myfirstapplication
 
 
 class abstract Piece(val largeur : Float,val longueur : Float,val nom : String)
@@ -32,4 +32,4 @@ fun main(){
 
 fun surface(largeur: Float, longueur: Float): Float {
     return longueur*largeur
-}
+}*/

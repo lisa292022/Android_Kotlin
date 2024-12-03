@@ -39,6 +39,9 @@ import com.example.myfirstapplication.ui.theme.MyFirstApplicationTheme
 class ProfileDest
 
 @Serializable
+class VideDest
+
+@Serializable
 class FilmsDest
 
 @Serializable
@@ -121,6 +124,7 @@ class MainActivity : ComponentActivity() {
                             currentDestination?.hasRoute<FilmsDest>() == true -> "Films"
                             currentDestination?.hasRoute<SeriesDest>() == true -> "Series"
                             currentDestination?.hasRoute<ActeursDest>() == true -> "Acteurs"
+                            currentDestination?.hasRoute<VideDest>() == true -> "Vide"
                             else -> "Profil"
                         }
 
@@ -134,6 +138,17 @@ class MainActivity : ComponentActivity() {
                     bottomBar = {
                         if (currentDestination?.hasRoute<ProfileDest>() == false) {
                             NavigationBar {
+                                NavigationBarItem(
+                                    icon = {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.ic_android_black_24dp),
+                                            contentDescription = "vide"
+                                        )
+                                    },
+                                    label = { Text("Vide") },
+                                    selected = currentDestination?.hasRoute<VideDest>() == true,
+                                    onClick = { navController.navigate(VideDest()) }
+                                )
                                 NavigationBarItem(
                                     icon = {
                                         Icon(
@@ -183,6 +198,10 @@ class MainActivity : ComponentActivity() {
                                 navController
                             )
                         }
+                        composable<VideDest> {
+                            VideScreen(viewModel = viewModel, navController)
+                        }
+
                         composable<FilmsDest> {
                             FilmsScreen(viewModel = viewModel, navController)
                         }
