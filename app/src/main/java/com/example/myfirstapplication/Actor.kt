@@ -18,6 +18,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 
+
 @Composable
 fun ActeurScreen(viewModel: MainViewModel) {
     val acteurs by viewModel.personnes.collectAsState()
