@@ -3,6 +3,7 @@ package com.example.myfirstapplication
 import Api
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.squareup.moshi.Moshi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
@@ -86,6 +87,13 @@ class MainViewModel : ViewModel() {
                 e.printStackTrace()
             }
         }
+    }
+
+
+
+    fun fetchPlayList(): Playlist? {
+        val moshi = Moshi.Builder().build()
+        return moshi.adapter(Playlist::class.java).fromJson(playlistjson)
     }
 }
 

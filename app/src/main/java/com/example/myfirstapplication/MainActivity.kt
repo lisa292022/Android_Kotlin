@@ -124,7 +124,7 @@ class MainActivity : ComponentActivity() {
                             currentDestination?.hasRoute<FilmsDest>() == true -> "Films"
                             currentDestination?.hasRoute<SeriesDest>() == true -> "Series"
                             currentDestination?.hasRoute<ActeursDest>() == true -> "Acteurs"
-                            currentDestination?.hasRoute<VideDest>() == true -> "Vide"
+                            currentDestination?.hasRoute<VideDest>() == true -> "Playlist"
                             else -> "Profil"
                         }
 
@@ -145,7 +145,7 @@ class MainActivity : ComponentActivity() {
                                             contentDescription = "vide"
                                         )
                                     },
-                                    label = { Text("Vide") },
+                                    label = { Text("Playlist") },
                                     selected = currentDestination?.hasRoute<VideDest>() == true,
                                     onClick = { navController.navigate(VideDest()) }
                                 )

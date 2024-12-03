@@ -27,6 +27,6 @@ import androidx.navigation.NavController
 
 @Composable
 fun VideScreen(viewModel: MainViewModel, navController: NavController) {
-    val vide by viewModel.movies.collectAsState()
+
 }
 
